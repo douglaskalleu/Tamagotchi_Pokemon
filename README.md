@@ -20,6 +20,7 @@ O objetivo final da aplicação será imprimir todas as interações do usuário
 **Back-end:** 
 - [C#](https://learn.microsoft.com/pt-br/dotnet/) - [.NET8](https://learn.microsoft.com/pt-br/dotnet/core/whats-new/dotnet-8)
 - [RestSharp](https://restsharp.dev)
+- [JSON](https://developer.mozilla.org/en-US/docs/Glossary/JSON)
 
 
 ## Rodando localmente
