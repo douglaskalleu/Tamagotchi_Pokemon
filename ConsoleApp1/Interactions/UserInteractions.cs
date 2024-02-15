@@ -1,4 +1,5 @@
-﻿using Tamagotchi_Pokemon.Contracts;
+﻿using AutoMapper;
+using Tamagotchi_Pokemon.Contracts;
 using Tamagotchi_Pokemon.Entities;
 
 namespace Tamagotchi_Pokemon.Interactions
@@ -13,14 +14,18 @@ namespace Tamagotchi_Pokemon.Interactions
                     | |    | |__| | . \| |____| |\  | |__| | |__| | | | | |____| |  | |_| |_ 
                     |_|     \____/|_|\_\______|_| \_|\_____|\____/  |_|  \_____|_|  |_|_____|";
 
-    private string? _player = string.Empty;
     private IRequests _request;
+    private IMapper _mapper;
+
+
+    private string? _player = string.Empty;
     private Results _pokemonResults = new Results();
 
-    public UserInteractions(IRequests request)
+    public UserInteractions(IRequests request, IMapper mapper)
     {
-      _request = request;
       Console.WriteLine(POKENGOTCHI);
+      _request = request;
+      _mapper = mapper;
     }
 
     public void ShowWelcome()
@@ -81,7 +86,7 @@ namespace Tamagotchi_Pokemon.Interactions
         selected = Console.ReadLine();
         if (!string.IsNullOrEmpty(selected))
           break;
-        
+
         Console.WriteLine(string.Format($"{Environment.NewLine}Escolha inválida.{Environment.NewLine}"));
       }
       return selected;
@@ -101,7 +106,7 @@ namespace Tamagotchi_Pokemon.Interactions
       }
     }
 
-    public List<Pokemon> ConfirmAdoption(List<Pokemon> pokedex, Pokemon pokemon)
+    public List<PokedexDto> ConfirmAdoption(List<PokedexDto> pokedex, Pokemon pokemon)
     {
       Console.WriteLine(string.Format($"{Environment.NewLine}--------------------DESTALHES ADOÇÃO---------------------"));
       Console.Write("Confirma adoção? (s/n): ");
@@ -109,7 +114,8 @@ namespace Tamagotchi_Pokemon.Interactions
 
       if (resposta.ToUpper() == "S")
       {
-        pokedex.Add(pokemon);
+        var pokemonAdopt = _mapper.Map<PokedexDto>(pokemon);
+        pokedex.Add(pokemonAdopt);
         Console.WriteLine($"Parabéns! Você adotou um {pokemon.name} !");
         Console.WriteLine("──────────────");
         Console.WriteLine("────▄████▄────");
@@ -123,19 +129,56 @@ namespace Tamagotchi_Pokemon.Interactions
       return pokedex;
     }
 
-    public void ShowPokedex(List<Pokemon> pokemonsOfPokeBall)
+    public void ShowPokedex(List<PokedexDto> pokemonsOfPokedex)
     {
       Console.WriteLine(string.Format($"{Environment.NewLine}------------------------POKEDEX--------------------------"));
       Console.WriteLine("Pokemons na pokedex:");
-      if (pokemonsOfPokeBall.Count == 0)
+
+      if (pokemonsOfPokedex.Count == 0)
         Console.WriteLine("Você ainda não possui pokemons.");
       else
       {
-        for (int i = 0; i < pokemonsOfPokeBall.Count; i++)
+        Console.WriteLine("Escolha um pokemon para brincar: ");
+        for (int i = 0; i < pokemonsOfPokedex.Count; i++)
         {
-          Console.WriteLine((i + 1) + ". " + pokemonsOfPokeBall[i].name);
+          Console.WriteLine((i + 1) + ". " + pokemonsOfPokedex[i].Name);
         }
+
+        int indexSelected = GetSelectedPlayer(pokemonsOfPokedex.Count) - 1;
+        PokedexDto pokemon = pokemonsOfPokedex[indexSelected];
+
+        int optionInterection = 0;
+        while (optionInterection != 4)
+        {
+          ShowMenuInterection();
+          optionInterection = GetSelectedPlayer(4);
+
+          switch (optionInterection)
+          {
+            case 1:
+              pokemon.ShowStatus();
+              break;
+            case 2:
+              pokemon.Eat();
+              break;
+            case 3:
+              pokemon.Play();
+              break;
+          }
+        }
+
       }
+    }
+
+    private void ShowMenuInterection()
+    {
+      Console.WriteLine("\n ──────────────");
+      Console.WriteLine("Menu de Interação:");
+      Console.WriteLine("1. Saber como o mascote está");
+      Console.WriteLine("2. Alimentar o mascote");
+      Console.WriteLine("3. Brincar com o mascote");
+      Console.WriteLine("4. Voltar");
+      Console.Write("Escolha uma opção: ");
     }
 
     private int ValidSelected(string selected)
@@ -144,6 +187,16 @@ namespace Tamagotchi_Pokemon.Interactions
         Console.Write(string.Format($"{Environment.NewLine}Escolha inválida. Por favor, escolha uma opção entre 1 e 4:{Environment.NewLine}"));
 
       return value;
+    }
+
+    private int GetSelectedPlayer(int maxOpcao)
+    {
+      int escolha;
+      while (!int.TryParse(Console.ReadLine(), out escolha) || escolha < 1 || escolha > maxOpcao)
+      {
+        Console.Write($"Escolha inválida. Por favor, escolha uma opção entre 1 e {maxOpcao}: ");
+      }
+      return escolha;
     }
   }
 }

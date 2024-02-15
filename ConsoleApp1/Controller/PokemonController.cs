@@ -1,4 +1,5 @@
-﻿using Tamagotchi_Pokemon.Contracts;
+﻿using AutoMapper;
+using Tamagotchi_Pokemon.Contracts;
 using Tamagotchi_Pokemon.Entities;
 using Tamagotchi_Pokemon.Interactions;
 
@@ -6,13 +7,25 @@ namespace Tamagotchi_Pokemon.Controller
 {
   public class PokemonController
   {
+    private IMapper _mapper;
+    private IRequests _requests;
+
+    public PokemonController()
+    {
+      var config = new MapperConfiguration(cfg =>
+      {
+        cfg.AddProfile<Services.MapperProfile>();
+      });
+
+      _mapper = config.CreateMapper();
+      _requests = new Requests.Requests();
+    }
+
     public void Play()
     {
-      var request = new Requests.Requests();
-      var interactions = new UserInteractions(request);
-      IRequests iRequest = request;
+      var interactions = new UserInteractions(_requests, _mapper);
       bool openedGame = true;
-      List<Pokemon> pokedex = [];
+      List<PokedexDto> pokedex = [];
 
       interactions.ShowWelcome();
 
@@ -35,10 +48,10 @@ namespace Tamagotchi_Pokemon.Controller
                 case 2:
                   string pokemonSelected, response;
                   Pokemon pokemonDetails;
-                  GetDatails(interactions, iRequest, out pokemonSelected, out response, out pokemonDetails);
+                  GetDatails(interactions, _requests, out pokemonSelected, out response, out pokemonDetails);
                   break;
                 case 3:
-                  GetDatails(interactions, iRequest, out pokemonSelected, out response, out pokemonDetails);
+                  GetDatails(interactions, _requests, out pokemonSelected, out response, out pokemonDetails);
                   pokedex = interactions.ConfirmAdoption(pokedex, pokemonDetails);
                   break;
                 default:
@@ -62,8 +75,6 @@ namespace Tamagotchi_Pokemon.Controller
       } while (openedGame == true);
 
       Console.ReadKey();
-
-
     }
 
     private void GetDatails(UserInteractions interactions, IRequests iRequest, out string pokemonSelected, out string response, out Pokemon pokemonDetails)
