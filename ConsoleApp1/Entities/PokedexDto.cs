@@ -18,7 +18,7 @@ namespace Tamagotchi_Pokemon.Entities
       Food = Math.Min(Food + 2, 10);
       Energy = Math.Max(Energy - 1, 0);
 
-      Console.WriteLine("Mascote Alimentado!");
+      Console.WriteLine("Pokémon Alimentado!");
 
     }
 
@@ -28,7 +28,7 @@ namespace Tamagotchi_Pokemon.Entities
       Energy = Math.Max(Energy - 2, 0);
       Food = Math.Max(Food - 1, 0);
 
-      Console.WriteLine("Mascote Feliz!");
+      Console.WriteLine("Pokémon Feliz!");
 
     }
 
@@ -37,7 +37,7 @@ namespace Tamagotchi_Pokemon.Entities
       Energy = Math.Min(Energy + 4, 10);
       Mud = Math.Max(Mud - 1, 0);
 
-      Console.WriteLine("Mascote a Mimir!");
+      Console.WriteLine("Pokémon a Mimir!");
 
     }
 
@@ -46,13 +46,14 @@ namespace Tamagotchi_Pokemon.Entities
       Mud = Math.Min(Mud + 2, 10);
       Health = Math.Min(Health + 1, 10);
 
-      Console.WriteLine("Mascote Amado!");
+      Console.WriteLine("Pokémon Amado!");
 
     }
 
     public void ShowStatus()
     {
-      Console.WriteLine("Status do Mascote:");
+      Console.WriteLine(Environment.NewLine);
+      Console.WriteLine("Status do pokémon:");
       Console.WriteLine($"Alimentação: {Food}");
       Console.WriteLine($"Humor: {Mud}");
       Console.WriteLine($"Energia: {Energy}");

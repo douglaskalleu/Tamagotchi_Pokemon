@@ -47,8 +47,7 @@ namespace Tamagotchi_Pokemon.Interactions
       Console.WriteLine($"1 - Adotar um mascote virtual");
       Console.WriteLine($"2 - Abrir pokedex");
       Console.WriteLine($"3 - Sair");
-      var choiceMainMenu = Console.ReadLine();
-      return ValidSelected(choiceMainMenu);
+      return GetSelectedPlayer(3);
     }
 
     public int Adopt()
@@ -59,8 +58,7 @@ namespace Tamagotchi_Pokemon.Interactions
       Console.WriteLine("2 - Ver Detalhes de um Pokemon");
       Console.WriteLine("3 - Adotar um Pokemon");
       Console.WriteLine("4 - Voltar ao Menu Principal");
-      var choiceAdopt = Console.ReadLine();
-      return ValidSelected(choiceAdopt);
+      return GetSelectedPlayer(4);
     }
 
     public void ShowListPokemon()
@@ -94,7 +92,7 @@ namespace Tamagotchi_Pokemon.Interactions
 
     public void ShowDetails(Pokemon detalhes)
     {
-      Console.WriteLine(string.Format($"{Environment.NewLine}-------------------DESTALHES POKEMON---------------------"));
+      Console.WriteLine(string.Format($"{Environment.NewLine}-------------------DESTALHES POKÉMON---------------------"));
       Console.WriteLine("Nome: " + detalhes.name);
       Console.WriteLine("Altura: " + detalhes.height);
       Console.WriteLine("Peso: " + detalhes.weight);
@@ -131,27 +129,27 @@ namespace Tamagotchi_Pokemon.Interactions
 
     public void ShowPokedex(List<PokedexDto> pokemonsOfPokedex)
     {
-      Console.WriteLine(string.Format($"{Environment.NewLine}------------------------POKEDEX--------------------------"));
-      Console.WriteLine("Pokemons na pokedex:");
+      Console.WriteLine(string.Format($"{Environment.NewLine}------------------------POKÉDEX--------------------------"));
+      Console.WriteLine("Pokemons na pokédex:");
 
       if (pokemonsOfPokedex.Count == 0)
-        Console.WriteLine("Você ainda não possui pokemons.");
+        Console.WriteLine("Você ainda não possui pokémons.");
       else
       {
-        Console.WriteLine("Escolha um pokemon para brincar: ");
+        Console.WriteLine("Escolha um pokémon para brincar: ");
         for (int i = 0; i < pokemonsOfPokedex.Count; i++)
         {
-          Console.WriteLine((i + 1) + ". " + pokemonsOfPokedex[i].Name);
+          Console.WriteLine((i + 1) + "- " + pokemonsOfPokedex[i].Name);
         }
 
         int indexSelected = GetSelectedPlayer(pokemonsOfPokedex.Count) - 1;
         PokedexDto pokemon = pokemonsOfPokedex[indexSelected];
 
         int optionInterection = 0;
-        while (optionInterection != 4)
+        while (optionInterection != 6)
         {
           ShowMenuInterection();
-          optionInterection = GetSelectedPlayer(4);
+          optionInterection = GetSelectedPlayer(7);
 
           switch (optionInterection)
           {
@@ -164,6 +162,14 @@ namespace Tamagotchi_Pokemon.Interactions
             case 3:
               pokemon.Play();
               break;
+            case 4:
+              pokemon.Sleep();
+              break;
+            case 5:
+              pokemon.GivingCare();
+              break;
+            case 6:
+              break;
           }
         }
 
@@ -172,21 +178,15 @@ namespace Tamagotchi_Pokemon.Interactions
 
     private void ShowMenuInterection()
     {
-      Console.WriteLine("\n ──────────────");
+      Console.WriteLine(string.Format($"{Environment.NewLine}----------------INTERAJA COM SEU POKÉMON-----------------"));
       Console.WriteLine("Menu de Interação:");
-      Console.WriteLine("1. Saber como o mascote está");
-      Console.WriteLine("2. Alimentar o mascote");
-      Console.WriteLine("3. Brincar com o mascote");
-      Console.WriteLine("4. Voltar");
+      Console.WriteLine("1- Saber como o pokémon está");
+      Console.WriteLine("2- Alimentar o pokémon");
+      Console.WriteLine("3- Brincar com o pokémon");
+      Console.WriteLine("4- Colocar para dormir");
+      Console.WriteLine("5- Fazer carinho");
+      Console.WriteLine("6- Voltar menu principal");
       Console.Write("Escolha uma opção: ");
-    }
-
-    private int ValidSelected(string selected)
-    {
-      if (!int.TryParse(selected, out var value) && value < 1 || value > 4)
-        Console.Write(string.Format($"{Environment.NewLine}Escolha inválida. Por favor, escolha uma opção entre 1 e 4:{Environment.NewLine}"));
-
-      return value;
     }
 
     private int GetSelectedPlayer(int maxOpcao)
